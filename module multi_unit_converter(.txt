@@ -1,0 +1,99 @@
+module multi_unit_converter(
+    input [2:0] unit_select,
+    input [15:0] input_value,
+    output reg [15:0] output_value
+);
+   
+    always @(unit_select or input_value) begin
+        if (unit_select == 3'b000)
+            output_value = (input_value * 9 / 5) + 32; // Celsius to Fahrenheit
+        else if (unit_select == 3'b001)
+            output_value = (input_value - 32) * 5 / 9;   // Fahrenheit to Celsius
+        else if (unit_select == 3'b010)
+            output_value = input_value * 0.621371;       // Kilometers to Miles
+        else if (unit_select == 3'b011)
+            output_value = input_value / 0.621371;       // Miles to Kilometers
+        else if (unit_select == 3'b100)
+            output_value = input_value * 2.20462;        // Kilograms to Pounds
+        else if (unit_select == 3'b101)
+            output_value = input_value / 2.20462;        // Pounds to Kilograms
+        else if (unit_select == 3'b110)
+            output_value = input_value * 0.621371;       // km/h to mph
+        else if (unit_select == 3'b111)
+            output_value = input_value / 0.621371;       // mph to km/h
+        else
+            output_value = 16'b0;                        // Default case
+    end
+endmodule
+
+
+testbench - 
+
+`timescale 1ns / 1ps
+
+module multi_unit_converter_tb;
+
+    reg [2:0] unit_select; // 3-bit input for unit selection
+    reg [15:0] input_value; // 16-bit input value
+    wire [15:0] output_value; // 16-bit output value
+
+    // Instantiate the unit converter module
+    multi_unit_converter uut (
+        .unit_select(unit_select),
+        .input_value(input_value),
+        .output_value(output_value)
+    );
+
+    initial begin
+        // Test cases for Celsius to Fahrenheit
+        unit_select = 3'b000; // Celsius to Fahrenheit
+        input_value = 16'd100; // 100 Celsius
+        #10; // wait for 10 time units
+        $display("Celsius to Fahrenheit: %d -> %d", input_value, output_value);
+       
+        // Test cases for Fahrenheit to Celsius
+        unit_select = 3'b001; // Fahrenheit to Celsius
+        input_value = 16'd212; // 212 Fahrenheit
+        #10; // wait for 10 time units
+        $display("Fahrenheit to Celsius: %d -> %d", input_value, output_value);
+       
+        // Test cases for kilometers to miles
+        unit_select = 3'b010; // Kilometers to Miles
+        input_value = 16'd100; // 100 kilometers
+        #10; // wait for 10 time units
+        $display("Kilometers to Miles: %d -> %d", input_value, output_value);
+       
+        // Test cases for miles to kilometers
+        unit_select = 3'b011; // Miles to Kilometers
+        input_value = 16'd62; // 62 miles
+        #10; // wait for 10 time units
+        $display("Miles to Kilometers: %d -> %d", input_value, output_value);
+       
+        // Test cases for kilograms to pounds
+        unit_select = 3'b100; // Kilograms to Pounds
+        input_value = 16'd100; // 100 kilograms
+        #10; // wait for 10 time units
+        $display("Kilograms to Pounds: %d -> %d", input_value, output_value);
+       
+        // Test cases for pounds to kilograms
+        unit_select = 3'b101; // Pounds to Kilograms
+        input_value = 16'd220; // 220 pounds
+        #10; // wait for 10 time units
+        $display("Pounds to Kilograms: %d -> %d", input_value, output_value);
+       
+        // Test cases for km/h to mph
+        unit_select = 3'b110; // Kilometers per hour to Miles per hour
+        input_value = 16'd100; // 100 km/h
+        #10; // wait for 10 time units
+        $display("km/h to mph: %d -> %d", input_value, output_value);
+       
+        // Test cases for mph to km/h
+        unit_select = 3'b111; // Miles per hour to Kilometers per hour
+        input_value = 16'd62; // 62 mph
+        #10; // wait for 10 time units
+        $display("mph to km/h: %d -> %d", input_value, output_value);
+       
+        $finish; // End the simulation
+    end
+
+endmodule
