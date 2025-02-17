@@ -5,5 +5,3 @@ This Verilog project performs multiple unit conversions including:
 - Weight (Kilograms ↔ Pounds)
 - Speed (km/h ↔ mph)
 
-## Usage
-Run the testbench `multi_unit_converter_tb` to simulate the design.
